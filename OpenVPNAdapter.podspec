@@ -101,6 +101,8 @@ Pod::Spec.new do |s|
     client.compiler_flags = "-x objective-c++", "-DUSE_ASIO", "-DUSE_ASIO_THREADLOCAL", "-DASIO_STANDALONE", "-DASIO_NO_DEPRECATED", "-DASIO_HAS_STD_STRING_VIEW", "-DHAVE_LZ4", "-DUSE_OPENSSL", "-DOPENVPN_FORCE_TUN_NULL", "-DUSE_TUN_BUILDER"
   end
 
+  s.static_framework = true
+
   s.dependency 'OpenSSL-Universal'
 
 end
