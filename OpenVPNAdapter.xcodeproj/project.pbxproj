@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		027E5640924224FB6724829C /* Pods_OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54E993E16AB47ACA5311EDDC /* Pods_OpenVPNClient.framework */; };
+		447E6462E8A6D7DF4A2B5746 /* Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D71F6ABD08BD74A9BD01F6EF /* Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework */; };
+		49EE90B09F6B1C242C00D573 /* Pods_OpenVPNAdapter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 920F85A1561A4B65E50D6612 /* Pods_OpenVPNAdapter.framework */; };
+		86651E470D33C1347AAE61D1 /* Pods_LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E99F6C7306C1380CDA009F /* Pods_LZ4.framework */; };
 		C910EAE524EBB1DA0081AF13 /* OpenVPNReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FD624123F48005C2EBC /* OpenVPNReachabilityTests.swift */; };
 		C910EAE724EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h in Headers */ = {isa = PBXBuildFile; fileRef = C910EAE624EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C910EAEE24EBBFB60081AF13 /* client.crt in Resources */ = {isa = PBXBuildFile; fileRef = C910EAEB24EBBFB60081AF13 /* client.crt */; };
@@ -57,11 +61,9 @@
 		C97E5FE024123F48005C2EBC /* VPNProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FDA24123F48005C2EBC /* VPNProfile.swift */; };
 		C97E5FE124123F48005C2EBC /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FDB24123F48005C2EBC /* Bundle.swift */; };
 		C97E5FE624124B0E005C2EBC /* Umbrella-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = C97E5FBA2412344D005C2EBC /* Umbrella-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
+		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::LZ4::Product /* LZ4.framework */; };
 		C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */; };
 		C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF642411189800D828D4 /* UIKit.framework */; platformFilter = ios; };
-		DF89D2D5268CD88500BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */; };
-		DF89D2DA268CD8BF00BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */; };
 		OBJ_250 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* lz4.c */; };
 		OBJ_251 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* lz4frame.c */; };
 		OBJ_252 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* lz4hc.c */; };
@@ -106,9 +108,9 @@
 		OBJ_300 /* OpenVPNTransportStats.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_68 /* OpenVPNTransportStats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		OBJ_301 /* OpenVPNSessionToken.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_69 /* OpenVPNSessionToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		OBJ_302 /* OpenVPNCertificate.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_70 /* OpenVPNCertificate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		OBJ_304 /* OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */; };
+		OBJ_304 /* OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */; };
 		OBJ_322 /* ovpncli.mm in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_73 /* ovpncli.mm */; };
-		OBJ_325 /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
+		OBJ_325 /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::LZ4::Product /* LZ4.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +145,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07E99F6C7306C1380CDA009F /* Pods_LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		104271EAF155EB2A2D1E83FC /* Pods-OpenVPNAdapter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNAdapter.release.xcconfig"; path = "Target Support Files/Pods-OpenVPNAdapter/Pods-OpenVPNAdapter.release.xcconfig"; sourceTree = "<group>"; };
+		33674A2E67F9B0AEA98A9A49 /* Pods-OpenVPNAdapter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNAdapter.debug.xcconfig"; path = "Target Support Files/Pods-OpenVPNAdapter/Pods-OpenVPNAdapter.debug.xcconfig"; sourceTree = "<group>"; };
+		4D840B95474E8926A226E47A /* Pods-OpenVPNClient.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNClient.debug.xcconfig"; path = "Target Support Files/Pods-OpenVPNClient/Pods-OpenVPNClient.debug.xcconfig"; sourceTree = "<group>"; };
+		4DF6D31CAF0844A540BDA5B4 /* Pods-LZ4.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LZ4.release.xcconfig"; path = "Target Support Files/Pods-LZ4/Pods-LZ4.release.xcconfig"; sourceTree = "<group>"; };
+		54E993E16AB47ACA5311EDDC /* Pods_OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		73FEF865507EBBBD08CCE018 /* Pods-OpenVPNClient.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNClient.release.xcconfig"; path = "Target Support Files/Pods-OpenVPNClient/Pods-OpenVPNClient.release.xcconfig"; sourceTree = "<group>"; };
+		920F85A1561A4B65E50D6612 /* Pods_OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD1548FA41F7FF7AF8B4895C /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNAdapter-OpenVPNAdapterTests.debug.xcconfig"; path = "Target Support Files/Pods-OpenVPNAdapter-OpenVPNAdapterTests/Pods-OpenVPNAdapter-OpenVPNAdapterTests.debug.xcconfig"; sourceTree = "<group>"; };
+		BA5203DBCA7A91FC2EBB7DA4 /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenVPNAdapter-OpenVPNAdapterTests.release.xcconfig"; path = "Target Support Files/Pods-OpenVPNAdapter-OpenVPNAdapterTests/Pods-OpenVPNAdapter-OpenVPNAdapterTests.release.xcconfig"; sourceTree = "<group>"; };
 		BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "OpenSSL-1.1.1100/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		C910EAE624EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = OpenVPNConfigurationEvaluation.h; sourceTree = "<group>"; };
 		C910EAEB24EBBFB60081AF13 /* client.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = client.crt; sourceTree = "<group>"; };
@@ -204,8 +216,10 @@
 		C9EABF7324111AEE00D828D4 /* OpenVPNClient.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OpenVPNClient.xcconfig; sourceTree = "<group>"; };
 		C9EABF7424111D6100D828D4 /* OpenVPNAdapter.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OpenVPNAdapter.xcconfig; sourceTree = "<group>"; };
 		C9EABF7524111E9C00D828D4 /* LZ4.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LZ4.xcconfig; sourceTree = "<group>"; };
+		D71F6ABD08BD74A9BD01F6EF /* Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = Sources/OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
+		E70F54BD9432344A768E6460 /* Pods-LZ4.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LZ4.debug.xcconfig"; path = "Target Support Files/Pods-LZ4/Pods-LZ4.debug.xcconfig"; sourceTree = "<group>"; };
 		OBJ_16 /* lz4.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4.c; sourceTree = "<group>"; };
 		OBJ_17 /* lz4frame.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4frame.c; sourceTree = "<group>"; };
 		OBJ_18 /* lz4hc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4hc.c; sourceTree = "<group>"; };
@@ -255,9 +269,9 @@
 		OBJ_69 /* OpenVPNSessionToken.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNSessionToken.h; sourceTree = "<group>"; };
 		OBJ_70 /* OpenVPNCertificate.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNCertificate.h; sourceTree = "<group>"; };
 		OBJ_73 /* ovpncli.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ovpncli.mm; sourceTree = "<group>"; };
-		"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OpenVPNAdapter::LZ4::Product /* LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,6 +279,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				447E6462E8A6D7DF4A2B5746 /* Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +287,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				86651E470D33C1347AAE61D1 /* Pods_LZ4.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,11 +295,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				DF89D2DA268CD8BF00BF937E /* OpenSSL.xcframework in Frameworks */,
 				OBJ_304 /* OpenVPNClient.framework in Frameworks */,
 				C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */,
 				C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */,
 				C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */,
+				49EE90B09F6B1C242C00D573 /* Pods_OpenVPNAdapter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,14 +307,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				DF89D2D5268CD88500BF937E /* OpenSSL.xcframework in Frameworks */,
 				OBJ_325 /* LZ4.framework in Frameworks */,
+				027E5640924224FB6724829C /* Pods_OpenVPNClient.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		84C5082BFA5AD7E50E6E9BC8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E70F54BD9432344A768E6460 /* Pods-LZ4.debug.xcconfig */,
+				4DF6D31CAF0844A540BDA5B4 /* Pods-LZ4.release.xcconfig */,
+				33674A2E67F9B0AEA98A9A49 /* Pods-OpenVPNAdapter.debug.xcconfig */,
+				104271EAF155EB2A2D1E83FC /* Pods-OpenVPNAdapter.release.xcconfig */,
+				AD1548FA41F7FF7AF8B4895C /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.debug.xcconfig */,
+				BA5203DBCA7A91FC2EBB7DA4 /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.release.xcconfig */,
+				4D840B95474E8926A226E47A /* Pods-OpenVPNClient.debug.xcconfig */,
+				73FEF865507EBBBD08CCE018 /* Pods-OpenVPNClient.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		C910EAEA24EBBFB60081AF13 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -332,6 +364,10 @@
 				DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */,
 				C9EABF642411189800D828D4 /* UIKit.framework */,
 				C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */,
+				07E99F6C7306C1380CDA009F /* Pods_LZ4.framework */,
+				920F85A1561A4B65E50D6612 /* Pods_OpenVPNAdapter.framework */,
+				D71F6ABD08BD74A9BD01F6EF /* Pods_OpenVPNAdapter_OpenVPNAdapterTests.framework */,
+				54E993E16AB47ACA5311EDDC /* Pods_OpenVPNClient.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -381,9 +417,9 @@
 		OBJ_232 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */,
-				"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */,
-				"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */,
+				OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */,
+				OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */,
+				OpenVPNAdapter::LZ4::Product /* LZ4.framework */,
 				C97E5FCD24123F2E005C2EBC /* OpenVPNAdapterTests.xctest */,
 			);
 			name = Products;
@@ -503,6 +539,7 @@
 				OBJ_231 /* Tests */,
 				OBJ_232 /* Products */,
 				C9EABF2F24110BE100D828D4 /* Frameworks */,
+				84C5082BFA5AD7E50E6E9BC8 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -631,9 +668,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C97E5FD424123F2E005C2EBC /* Build configuration list for PBXNativeTarget "OpenVPNAdapterTests" */;
 			buildPhases = (
+				E2F59A78156FB74D3B7120B5 /* [CP] Check Pods Manifest.lock */,
 				C97E5FC924123F2E005C2EBC /* Sources */,
 				C97E5FCA24123F2E005C2EBC /* Frameworks */,
 				C97E5FCB24123F2E005C2EBC /* Resources */,
+				AB57DC15B75671404B7AF561 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -645,10 +684,11 @@
 			productReference = C97E5FCD24123F2E005C2EBC /* OpenVPNAdapterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		"OpenVPNAdapter::LZ4" /* LZ4 */ = {
+		OpenVPNAdapter::LZ4 /* LZ4 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_246 /* Build configuration list for PBXNativeTarget "LZ4" */;
 			buildPhases = (
+				5D47F7183E4C6BF809083078 /* [CP] Check Pods Manifest.lock */,
 				OBJ_249 /* Sources */,
 				OBJ_254 /* Frameworks */,
 			);
@@ -658,13 +698,14 @@
 			);
 			name = LZ4;
 			productName = LZ4;
-			productReference = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */;
+			productReference = OpenVPNAdapter::LZ4::Product /* LZ4.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		"OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */ = {
+		OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_256 /* Build configuration list for PBXNativeTarget "OpenVPNAdapter" */;
 			buildPhases = (
+				A1B0FBD67AFAE54DF1D49CFA /* [CP] Check Pods Manifest.lock */,
 				OBJ_259 /* Sources */,
 				OBJ_280 /* Headers */,
 				OBJ_303 /* Frameworks */,
@@ -677,13 +718,14 @@
 			);
 			name = OpenVPNAdapter;
 			productName = OpenVPNAdapter;
-			productReference = "OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */;
+			productReference = OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		"OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */ = {
+		OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_318 /* Build configuration list for PBXNativeTarget "OpenVPNClient" */;
 			buildPhases = (
+				33EF67C16141214D385C407F /* [CP] Check Pods Manifest.lock */,
 				OBJ_321 /* Sources */,
 				OBJ_323 /* Frameworks */,
 			);
@@ -694,7 +736,7 @@
 			);
 			name = OpenVPNClient;
 			productName = OpenVPNClient;
-			productReference = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */;
+			productReference = OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -724,9 +766,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				"OpenVPNAdapter::LZ4" /* LZ4 */,
-				"OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */,
-				"OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */,
+				OpenVPNAdapter::LZ4 /* LZ4 */,
+				OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */,
+				OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */,
 				C97E5FCC24123F2E005C2EBC /* OpenVPNAdapterTests */,
 			);
 		};
@@ -745,6 +787,114 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		33EF67C16141214D385C407F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OpenVPNClient-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5D47F7183E4C6BF809083078 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LZ4-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1B0FBD67AFAE54DF1D49CFA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OpenVPNAdapter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AB57DC15B75671404B7AF561 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenVPNAdapter-OpenVPNAdapterTests/Pods-OpenVPNAdapter-OpenVPNAdapterTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-OpenVPNAdapter-OpenVPNAdapterTests/Pods-OpenVPNAdapter-OpenVPNAdapterTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OpenVPNAdapter-OpenVPNAdapterTests/Pods-OpenVPNAdapter-OpenVPNAdapterTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E2F59A78156FB74D3B7120B5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OpenVPNAdapter-OpenVPNAdapterTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C97E5FC924123F2E005C2EBC /* Sources */ = {
@@ -810,22 +960,22 @@
 /* Begin PBXTargetDependency section */
 		C97E5FE324124652005C2EBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = "OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */;
+			target = OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */;
 			targetProxy = C97E5FE224124652005C2EBC /* PBXContainerItemProxy */;
 		};
 		C97E5FEA24124B6F005C2EBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
+			target = OpenVPNAdapter::LZ4 /* LZ4 */;
 			targetProxy = C97E5FE924124B6F005C2EBC /* PBXContainerItemProxy */;
 		};
 		OBJ_307 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = "OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */;
+			target = OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */;
 			targetProxy = C9EABF2C2411076400D828D4 /* PBXContainerItemProxy */;
 		};
 		OBJ_327 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
+			target = OpenVPNAdapter::LZ4 /* LZ4 */;
 			targetProxy = C9EABF2B2411076400D828D4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -833,6 +983,7 @@
 /* Begin XCBuildConfiguration section */
 		C97E5FD224123F2E005C2EBC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AD1548FA41F7FF7AF8B4895C /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -895,6 +1046,7 @@
 		};
 		C97E5FD324123F2E005C2EBC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BA5203DBCA7A91FC2EBB7DA4 /* Pods-OpenVPNAdapter-OpenVPNAdapterTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

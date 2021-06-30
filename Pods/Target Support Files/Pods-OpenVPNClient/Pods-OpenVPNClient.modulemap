@@ -1,0 +1,6 @@
+framework module Pods_OpenVPNClient {
+  umbrella header "Pods-OpenVPNClient-umbrella.h"
+
+  export *
+  module * { export * }
+}
