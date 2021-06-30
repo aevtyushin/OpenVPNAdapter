@@ -60,10 +60,8 @@
 		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
 		C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */; };
 		C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF642411189800D828D4 /* UIKit.framework */; platformFilter = ios; };
-		DF89D09C268CBC0900BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */; };
-		DF89D09D268CBC0900BF937E /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DF89D0A5268CBC1800BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */; };
-		DF89D0A6268CBC1800BF937E /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DF89D2D5268CD88500BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */; };
+		DF89D2DA268CD8BF00BF937E /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */; };
 		OBJ_250 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* lz4.c */; };
 		OBJ_251 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* lz4frame.c */; };
 		OBJ_252 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* lz4hc.c */; };
@@ -144,31 +142,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		DF89D09E268CBC0900BF937E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DF89D09D268CBC0900BF937E /* OpenSSL.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DF89D0A7268CBC1800BF937E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DF89D0A6268CBC1800BF937E /* OpenSSL.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "OpenSSL-1.1.1100/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		C910EAE624EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = OpenVPNConfigurationEvaluation.h; sourceTree = "<group>"; };
@@ -232,6 +205,7 @@
 		C9EABF7424111D6100D828D4 /* OpenVPNAdapter.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OpenVPNAdapter.xcconfig; sourceTree = "<group>"; };
 		C9EABF7524111E9C00D828D4 /* LZ4.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LZ4.xcconfig; sourceTree = "<group>"; };
 		DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
+		DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = Sources/OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		OBJ_16 /* lz4.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4.c; sourceTree = "<group>"; };
 		OBJ_17 /* lz4frame.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4frame.c; sourceTree = "<group>"; };
 		OBJ_18 /* lz4hc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4hc.c; sourceTree = "<group>"; };
@@ -305,7 +279,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				DF89D09C268CBC0900BF937E /* OpenSSL.xcframework in Frameworks */,
+				DF89D2DA268CD8BF00BF937E /* OpenSSL.xcframework in Frameworks */,
 				OBJ_304 /* OpenVPNClient.framework in Frameworks */,
 				C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */,
 				C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */,
@@ -317,7 +291,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				DF89D0A5268CBC1800BF937E /* OpenSSL.xcframework in Frameworks */,
+				DF89D2D5268CD88500BF937E /* OpenSSL.xcframework in Frameworks */,
 				OBJ_325 /* LZ4.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,6 +329,7 @@
 			children = (
 				BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */,
 				DF89D086268CBB9B00BF937E /* OpenSSL.xcframework */,
+				DF89D2D4268CD88400BF937E /* OpenSSL.xcframework */,
 				C9EABF642411189800D828D4 /* UIKit.framework */,
 				C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */,
 			);
@@ -693,7 +668,6 @@
 				OBJ_259 /* Sources */,
 				OBJ_280 /* Headers */,
 				OBJ_303 /* Frameworks */,
-				DF89D09E268CBC0900BF937E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -712,7 +686,6 @@
 			buildPhases = (
 				OBJ_321 /* Sources */,
 				OBJ_323 /* Frameworks */,
-				DF89D0A7268CBC1800BF937E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
