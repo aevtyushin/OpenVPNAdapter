@@ -83,12 +83,12 @@ Pod::Spec.new do |s|
     lz4.compiler_flags = "-DXXH_NAMESPACE=LZ4_"
   end
 
-  s.subspec "mbedTLS" do |mbedtls|
-    mbedtls.source_files  = "#{mbedtls_path}/library/*.{c}"
-    mbedtls.preserve_paths  = "#{mbedtls_path}/include/**/*.{h}"
+  # s.subspec "mbedTLS" do |mbedtls|
+  #   mbedtls.source_files  = "#{mbedtls_path}/library/*.{c}"
+  #   mbedtls.preserve_paths  = "#{mbedtls_path}/include/**/*.{h}"
 
-    mbedtls.compiler_flags = "-DMBEDTLS_MD4_C", "-DMBEDTLS_RELAXED_X509_DATE", "-D_FILE_OFFSET_BITS=64"
-  end
+  #   mbedtls.compiler_flags = "-DMBEDTLS_MD4_C", "-DMBEDTLS_RELAXED_X509_DATE", "-D_FILE_OFFSET_BITS=64"
+  # end
 
   s.subspec "OpenVPN3" do |openvpn|
     openvpn.preserve_paths = "#{openvpn_path}/openvpn/**/*.hpp", "#{openvpn_path}/client/*.{hpp,cpp}"
@@ -98,7 +98,7 @@ Pod::Spec.new do |s|
     client.source_files = "#{client_path}/library/*.{mm}", "#{client_path}/include/*.{hpp}"
     client.private_header_files = "#{client_path}/include/*.{hpp}"
 
-    client.compiler_flags = "-x objective-c++", "-DUSE_ASIO", "-DUSE_ASIO_THREADLOCAL", "-DASIO_STANDALONE", "-DASIO_NO_DEPRECATED", "-DASIO_HAS_STD_STRING_VIEW", "-DHAVE_LZ4", "-DUSE_MBEDTLS", "-DOPENVPN_FORCE_TUN_NULL", "-DUSE_TUN_BUILDER"
+    client.compiler_flags = "-x objective-c++", "-DUSE_ASIO", "-DUSE_ASIO_THREADLOCAL", "-DASIO_STANDALONE", "-DASIO_NO_DEPRECATED", "-DASIO_HAS_STD_STRING_VIEW", "-DHAVE_LZ4", "-DUSE_OPENSSL", "-DOPENVPN_FORCE_TUN_NULL", "-DUSE_TUN_BUILDER"
   end
 
 end
