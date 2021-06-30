@@ -7,7 +7,7 @@
 //
 
 #import "OpenVPNPrivateKey.h"
-
+#if defined(USE_MBEDTLS)
 #include <mbedtls/pk.h>
 
 #import "OpenVPNKeyType.h"
@@ -128,3 +128,4 @@
 }
 
 @end
+#endif

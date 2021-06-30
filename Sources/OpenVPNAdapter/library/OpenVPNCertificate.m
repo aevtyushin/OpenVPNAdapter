@@ -5,6 +5,7 @@
 //  Created by Sergey Abramchuk on 06.09.17.
 //
 //
+#if defined(USE_MBEDTLS)
 #import "OpenVPNCertificate.h"
 
 #include <mbedtls/x509_crt.h>
@@ -123,3 +124,4 @@
 }
 
 @end
+#endif

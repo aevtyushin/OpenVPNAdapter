@@ -6,8 +6,9 @@
 //
 
 #import "NSError+OpenVPNError.h"
-
+#if defined(USE_MBEDTLS)
 #import <mbedtls/error.h>
+#endif
 
 #import "OpenVPNError.h"
 
@@ -195,7 +196,7 @@
 }
 
 @end
-
+#if defined(USE_MBEDTLS)
 @implementation NSError (OpenVPNMbedTLSErrorGeneration)
 
 + (NSError *)ovpn_errorObjectForMbedTLSError:(NSInteger)errorCode description:(NSString *)description {
@@ -215,3 +216,4 @@
 }
 
 @end
+#endif

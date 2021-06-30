@@ -1,0 +1,919 @@
+From 1672464084483de62434030e26f9cef24eb60ad7 Mon Sep 17 00:00:00 2001
+From: Viktor Oreshkin <imselfish@stek29.rocks>
+Date: Tue, 29 Jun 2021 23:14:08 +0300
+Subject: [PATCH 1/1] openssl
+
+---
+ Configuration/OpenVPNClient.xcconfig          |   2 +-
+ Configuration/Project.xcconfig                |   2 +-
+ OpenVPNAdapter.xcodeproj/project.pbxproj      | 617 +-----------------
+ .../library/NSError+OpenVPNError.m            |   6 +-
+ .../library/OpenVPNCertificate.m              |   2 +
+ .../library/OpenVPNPrivateKey.m               |   3 +-
+ 6 files changed, 32 insertions(+), 600 deletions(-)
+
+diff --git a/Configuration/OpenVPNClient.xcconfig b/Configuration/OpenVPNClient.xcconfig
+index ad70cb9a8eed..b6fbefad3260 100644
+--- a/Configuration/OpenVPNClient.xcconfig
++++ b/Configuration/OpenVPNClient.xcconfig
+@@ -1,2 +1,2 @@
+-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) USE_ASIO USE_ASIO_THREADLOCAL ASIO_STANDALONE ASIO_NO_DEPRECATED ASIO_HAS_STD_STRING_VIEW USE_MBEDTLS HAVE_LZ4 OPENVPN_FORCE_TUN_NULL USE_TUN_BUILDER
++GCC_PREPROCESSOR_DEFINITIONS = $(inherited) USE_ASIO USE_ASIO_THREADLOCAL ASIO_STANDALONE ASIO_NO_DEPRECATED ASIO_HAS_STD_STRING_VIEW USE_OPENSSL HAVE_LZ4 OPENVPN_FORCE_TUN_NULL USE_TUN_BUILDER
+ GCC_WARN_64_TO_32_BIT_CONVERSION = NO
+diff --git a/Configuration/Project.xcconfig b/Configuration/Project.xcconfig
+index 2029cd2eb20d..1358331773f8 100755
+--- a/Configuration/Project.xcconfig
++++ b/Configuration/Project.xcconfig
+@@ -1,7 +1,7 @@
+ SUPPORTED_PLATFORMS = iphoneos iphonesimulator macosx
+ TARGETED_DEVICE_FAMILY = 1,2
+ 
+-HEADER_SEARCH_PATHS = $(inherited) $(SRCROOT)/Sources/OpenVPNAdapter/include $(SRCROOT)/Sources/OpenVPNClient/include $(SRCROOT)/Sources/LZ4/include $(SRCROOT)/Sources/mbedTLS/include $(SRCROOT)/Sources/ASIO/asio/include $(SRCROOT)/Sources/OpenVPN3
++HEADER_SEARCH_PATHS = $(inherited) $(SRCROOT)/Sources/OpenVPNAdapter/include $(SRCROOT)/Sources/OpenVPNClient/include $(SRCROOT)/Sources/LZ4/include $(SRCROOT)/Sources/ASIO/asio/include $(SRCROOT)/Sources/OpenVPN3
+ 
+ CLANG_CXX_LANGUAGE_STANDARD = gnu++14
+ CLANG_CXX_LIBRARY = libc++
+diff --git a/OpenVPNAdapter.xcodeproj/project.pbxproj b/OpenVPNAdapter.xcodeproj/project.pbxproj
+index ec06ea334530..1710107b2a4d 100644
+--- a/OpenVPNAdapter.xcodeproj/project.pbxproj
++++ b/OpenVPNAdapter.xcodeproj/project.pbxproj
+@@ -7,6 +7,9 @@
+ 	objects = {
+ 
+ /* Begin PBXBuildFile section */
++		BE0EBD1A268BB49F005CFAEC /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */; };
++		BE0EBD24268BB4AB005CFAEC /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */; };
++		BE0EBD25268BB4AB005CFAEC /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+ 		C910EAE524EBB1DA0081AF13 /* OpenVPNReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FD624123F48005C2EBC /* OpenVPNReachabilityTests.swift */; };
+ 		C910EAE724EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h in Headers */ = {isa = PBXBuildFile; fileRef = C910EAE624EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+ 		C910EAEE24EBBFB60081AF13 /* client.crt in Resources */ = {isa = PBXBuildFile; fileRef = C910EAEB24EBBFB60081AF13 /* client.crt */; };
+@@ -58,7 +61,6 @@
+ 		C97E5FE124123F48005C2EBC /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FDB24123F48005C2EBC /* Bundle.swift */; };
+ 		C97E5FE624124B0E005C2EBC /* Umbrella-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = C97E5FBA2412344D005C2EBC /* Umbrella-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
+ 		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
+-		C97E5FEC24124B73005C2EBC /* mbedTLS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::mbedTLS::Product" /* mbedTLS.framework */; };
+ 		C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */; };
+ 		C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF642411189800D828D4 /* UIKit.framework */; platformFilter = ios; };
+ 		OBJ_250 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* lz4.c */; };
+@@ -107,80 +109,7 @@
+ 		OBJ_302 /* OpenVPNCertificate.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_70 /* OpenVPNCertificate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+ 		OBJ_304 /* OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */; };
+ 		OBJ_322 /* ovpncli.mm in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_73 /* ovpncli.mm */; };
+-		OBJ_324 /* mbedTLS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::mbedTLS::Product" /* mbedTLS.framework */; };
+ 		OBJ_325 /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
+-		OBJ_332 /* aes.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_85 /* aes.c */; };
+-		OBJ_333 /* aesni.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_86 /* aesni.c */; };
+-		OBJ_334 /* arc4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_87 /* arc4.c */; };
+-		OBJ_335 /* asn1parse.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_88 /* asn1parse.c */; };
+-		OBJ_336 /* asn1write.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_89 /* asn1write.c */; };
+-		OBJ_337 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_90 /* base64.c */; };
+-		OBJ_338 /* bignum.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_91 /* bignum.c */; };
+-		OBJ_339 /* blowfish.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_92 /* blowfish.c */; };
+-		OBJ_340 /* camellia.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_93 /* camellia.c */; };
+-		OBJ_341 /* ccm.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_94 /* ccm.c */; };
+-		OBJ_342 /* certs.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_95 /* certs.c */; };
+-		OBJ_343 /* cipher.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_96 /* cipher.c */; };
+-		OBJ_344 /* cipher_wrap.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_97 /* cipher_wrap.c */; };
+-		OBJ_345 /* cmac.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_98 /* cmac.c */; };
+-		OBJ_346 /* ctr_drbg.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_99 /* ctr_drbg.c */; };
+-		OBJ_347 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_100 /* debug.c */; };
+-		OBJ_348 /* des.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_101 /* des.c */; };
+-		OBJ_349 /* dhm.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_102 /* dhm.c */; };
+-		OBJ_350 /* ecdh.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_103 /* ecdh.c */; };
+-		OBJ_351 /* ecdsa.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_104 /* ecdsa.c */; };
+-		OBJ_352 /* ecjpake.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_105 /* ecjpake.c */; };
+-		OBJ_353 /* ecp.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_106 /* ecp.c */; };
+-		OBJ_354 /* ecp_curves.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_107 /* ecp_curves.c */; };
+-		OBJ_355 /* entropy.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_108 /* entropy.c */; };
+-		OBJ_356 /* entropy_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_109 /* entropy_poll.c */; };
+-		OBJ_357 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_110 /* error.c */; };
+-		OBJ_358 /* gcm.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_111 /* gcm.c */; };
+-		OBJ_359 /* havege.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_112 /* havege.c */; };
+-		OBJ_360 /* hmac_drbg.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_113 /* hmac_drbg.c */; };
+-		OBJ_361 /* md.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_114 /* md.c */; };
+-		OBJ_362 /* md2.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_115 /* md2.c */; };
+-		OBJ_363 /* md4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_116 /* md4.c */; };
+-		OBJ_364 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_117 /* md5.c */; };
+-		OBJ_365 /* md_wrap.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_118 /* md_wrap.c */; };
+-		OBJ_366 /* memory_buffer_alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_119 /* memory_buffer_alloc.c */; };
+-		OBJ_367 /* net_sockets.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_120 /* net_sockets.c */; };
+-		OBJ_368 /* oid.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_121 /* oid.c */; };
+-		OBJ_369 /* padlock.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_122 /* padlock.c */; };
+-		OBJ_370 /* pem.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_123 /* pem.c */; };
+-		OBJ_371 /* pk.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_124 /* pk.c */; };
+-		OBJ_372 /* pk_wrap.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_125 /* pk_wrap.c */; };
+-		OBJ_373 /* pkcs11.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_126 /* pkcs11.c */; };
+-		OBJ_374 /* pkcs12.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_127 /* pkcs12.c */; };
+-		OBJ_375 /* pkcs5.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_128 /* pkcs5.c */; };
+-		OBJ_376 /* pkparse.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_129 /* pkparse.c */; };
+-		OBJ_377 /* pkwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_130 /* pkwrite.c */; };
+-		OBJ_378 /* platform.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_131 /* platform.c */; };
+-		OBJ_379 /* ripemd160.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_132 /* ripemd160.c */; };
+-		OBJ_380 /* rsa.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_133 /* rsa.c */; };
+-		OBJ_381 /* rsa_internal.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_134 /* rsa_internal.c */; };
+-		OBJ_382 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_135 /* sha1.c */; };
+-		OBJ_383 /* sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_136 /* sha256.c */; };
+-		OBJ_384 /* sha512.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_137 /* sha512.c */; };
+-		OBJ_385 /* ssl_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_138 /* ssl_cache.c */; };
+-		OBJ_386 /* ssl_ciphersuites.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_139 /* ssl_ciphersuites.c */; };
+-		OBJ_387 /* ssl_cli.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_140 /* ssl_cli.c */; };
+-		OBJ_388 /* ssl_cookie.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_141 /* ssl_cookie.c */; };
+-		OBJ_389 /* ssl_srv.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_142 /* ssl_srv.c */; };
+-		OBJ_390 /* ssl_ticket.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_143 /* ssl_ticket.c */; };
+-		OBJ_391 /* ssl_tls.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_144 /* ssl_tls.c */; };
+-		OBJ_392 /* threading.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_145 /* threading.c */; };
+-		OBJ_393 /* timing.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_146 /* timing.c */; };
+-		OBJ_394 /* version.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_147 /* version.c */; };
+-		OBJ_395 /* version_features.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_148 /* version_features.c */; };
+-		OBJ_396 /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_149 /* x509.c */; };
+-		OBJ_397 /* x509_create.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_150 /* x509_create.c */; };
+-		OBJ_398 /* x509_crl.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_151 /* x509_crl.c */; };
+-		OBJ_399 /* x509_crt.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_152 /* x509_crt.c */; };
+-		OBJ_400 /* x509_csr.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_153 /* x509_csr.c */; };
+-		OBJ_401 /* x509write_crt.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_154 /* x509write_crt.c */; };
+-		OBJ_402 /* x509write_csr.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_155 /* x509write_csr.c */; };
+-		OBJ_403 /* xtea.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_156 /* xtea.c */; };
+ /* End PBXBuildFile section */
+ 
+ /* Begin PBXContainerItemProxy section */
+@@ -198,20 +127,6 @@
+ 			remoteGlobalIDString = "OpenVPNAdapter::LZ4";
+ 			remoteInfo = LZ4;
+ 		};
+-		C97E5FEE24124B73005C2EBC /* PBXContainerItemProxy */ = {
+-			isa = PBXContainerItemProxy;
+-			containerPortal = OBJ_1 /* Project object */;
+-			proxyType = 1;
+-			remoteGlobalIDString = "OpenVPNAdapter::mbedTLS";
+-			remoteInfo = mbedTLS;
+-		};
+-		C9EABF2A2411076400D828D4 /* PBXContainerItemProxy */ = {
+-			isa = PBXContainerItemProxy;
+-			containerPortal = OBJ_1 /* Project object */;
+-			proxyType = 1;
+-			remoteGlobalIDString = "OpenVPNAdapter::mbedTLS";
+-			remoteInfo = mbedTLS;
+-		};
+ 		C9EABF2B2411076400D828D4 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = OBJ_1 /* Project object */;
+@@ -228,7 +143,22 @@
+ 		};
+ /* End PBXContainerItemProxy section */
+ 
++/* Begin PBXCopyFilesBuildPhase section */
++		BE0EBD26268BB4AB005CFAEC /* Embed Frameworks */ = {
++			isa = PBXCopyFilesBuildPhase;
++			buildActionMask = 2147483647;
++			dstPath = "";
++			dstSubfolderSpec = 10;
++			files = (
++				BE0EBD25268BB4AB005CFAEC /* OpenSSL.xcframework in Embed Frameworks */,
++			);
++			name = "Embed Frameworks";
++			runOnlyForDeploymentPostprocessing = 0;
++		};
++/* End PBXCopyFilesBuildPhase section */
++
+ /* Begin PBXFileReference section */
++		BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "OpenSSL-1.1.1100/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
+ 		C910EAE624EBB5210081AF13 /* OpenVPNConfigurationEvaluation.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = OpenVPNConfigurationEvaluation.h; sourceTree = "<group>"; };
+ 		C910EAEB24EBBFB60081AF13 /* client.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = client.crt; sourceTree = "<group>"; };
+ 		C910EAEC24EBBFB60081AF13 /* ca.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ca.crt; sourceTree = "<group>"; };
+@@ -289,141 +219,12 @@
+ 		C9EABF7324111AEE00D828D4 /* OpenVPNClient.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OpenVPNClient.xcconfig; sourceTree = "<group>"; };
+ 		C9EABF7424111D6100D828D4 /* OpenVPNAdapter.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = OpenVPNAdapter.xcconfig; sourceTree = "<group>"; };
+ 		C9EABF7524111E9C00D828D4 /* LZ4.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = LZ4.xcconfig; sourceTree = "<group>"; };
+-		C9EABF7624111F1600D828D4 /* mbedTLS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = mbedTLS.xcconfig; sourceTree = "<group>"; };
+-		OBJ_100 /* debug.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = debug.c; sourceTree = "<group>"; };
+-		OBJ_101 /* des.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = des.c; sourceTree = "<group>"; };
+-		OBJ_102 /* dhm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dhm.c; sourceTree = "<group>"; };
+-		OBJ_103 /* ecdh.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ecdh.c; sourceTree = "<group>"; };
+-		OBJ_104 /* ecdsa.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ecdsa.c; sourceTree = "<group>"; };
+-		OBJ_105 /* ecjpake.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ecjpake.c; sourceTree = "<group>"; };
+-		OBJ_106 /* ecp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ecp.c; sourceTree = "<group>"; };
+-		OBJ_107 /* ecp_curves.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ecp_curves.c; sourceTree = "<group>"; };
+-		OBJ_108 /* entropy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = entropy.c; sourceTree = "<group>"; };
+-		OBJ_109 /* entropy_poll.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = entropy_poll.c; sourceTree = "<group>"; };
+-		OBJ_110 /* error.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = error.c; sourceTree = "<group>"; };
+-		OBJ_111 /* gcm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = gcm.c; sourceTree = "<group>"; };
+-		OBJ_112 /* havege.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = havege.c; sourceTree = "<group>"; };
+-		OBJ_113 /* hmac_drbg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hmac_drbg.c; sourceTree = "<group>"; };
+-		OBJ_114 /* md.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md.c; sourceTree = "<group>"; };
+-		OBJ_115 /* md2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md2.c; sourceTree = "<group>"; };
+-		OBJ_116 /* md4.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md4.c; sourceTree = "<group>"; };
+-		OBJ_117 /* md5.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
+-		OBJ_118 /* md_wrap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = md_wrap.c; sourceTree = "<group>"; };
+-		OBJ_119 /* memory_buffer_alloc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = memory_buffer_alloc.c; sourceTree = "<group>"; };
+-		OBJ_120 /* net_sockets.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = net_sockets.c; sourceTree = "<group>"; };
+-		OBJ_121 /* oid.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = oid.c; sourceTree = "<group>"; };
+-		OBJ_122 /* padlock.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = padlock.c; sourceTree = "<group>"; };
+-		OBJ_123 /* pem.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pem.c; sourceTree = "<group>"; };
+-		OBJ_124 /* pk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pk.c; sourceTree = "<group>"; };
+-		OBJ_125 /* pk_wrap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pk_wrap.c; sourceTree = "<group>"; };
+-		OBJ_126 /* pkcs11.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkcs11.c; sourceTree = "<group>"; };
+-		OBJ_127 /* pkcs12.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkcs12.c; sourceTree = "<group>"; };
+-		OBJ_128 /* pkcs5.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkcs5.c; sourceTree = "<group>"; };
+-		OBJ_129 /* pkparse.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkparse.c; sourceTree = "<group>"; };
+-		OBJ_130 /* pkwrite.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkwrite.c; sourceTree = "<group>"; };
+-		OBJ_131 /* platform.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = platform.c; sourceTree = "<group>"; };
+-		OBJ_132 /* ripemd160.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ripemd160.c; sourceTree = "<group>"; };
+-		OBJ_133 /* rsa.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rsa.c; sourceTree = "<group>"; };
+-		OBJ_134 /* rsa_internal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rsa_internal.c; sourceTree = "<group>"; };
+-		OBJ_135 /* sha1.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+-		OBJ_136 /* sha256.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sha256.c; sourceTree = "<group>"; };
+-		OBJ_137 /* sha512.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sha512.c; sourceTree = "<group>"; };
+-		OBJ_138 /* ssl_cache.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_cache.c; sourceTree = "<group>"; };
+-		OBJ_139 /* ssl_ciphersuites.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_ciphersuites.c; sourceTree = "<group>"; };
+-		OBJ_140 /* ssl_cli.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_cli.c; sourceTree = "<group>"; };
+-		OBJ_141 /* ssl_cookie.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_cookie.c; sourceTree = "<group>"; };
+-		OBJ_142 /* ssl_srv.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_srv.c; sourceTree = "<group>"; };
+-		OBJ_143 /* ssl_ticket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_ticket.c; sourceTree = "<group>"; };
+-		OBJ_144 /* ssl_tls.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ssl_tls.c; sourceTree = "<group>"; };
+-		OBJ_145 /* threading.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = threading.c; sourceTree = "<group>"; };
+-		OBJ_146 /* timing.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = timing.c; sourceTree = "<group>"; };
+-		OBJ_147 /* version.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = version.c; sourceTree = "<group>"; };
+-		OBJ_148 /* version_features.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = version_features.c; sourceTree = "<group>"; };
+-		OBJ_149 /* x509.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509.c; sourceTree = "<group>"; };
+-		OBJ_150 /* x509_create.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509_create.c; sourceTree = "<group>"; };
+-		OBJ_151 /* x509_crl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509_crl.c; sourceTree = "<group>"; };
+-		OBJ_152 /* x509_crt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509_crt.c; sourceTree = "<group>"; };
+-		OBJ_153 /* x509_csr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509_csr.c; sourceTree = "<group>"; };
+-		OBJ_154 /* x509write_crt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509write_crt.c; sourceTree = "<group>"; };
+-		OBJ_155 /* x509write_csr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = x509write_csr.c; sourceTree = "<group>"; };
+-		OBJ_156 /* xtea.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xtea.c; sourceTree = "<group>"; };
+-		OBJ_159 /* pem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pem.h; sourceTree = "<group>"; };
+ 		OBJ_16 /* lz4.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4.c; sourceTree = "<group>"; };
+-		OBJ_160 /* check_config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = check_config.h; sourceTree = "<group>"; };
+-		OBJ_161 /* error.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
+-		OBJ_162 /* md2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = md2.h; sourceTree = "<group>"; };
+-		OBJ_163 /* oid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = oid.h; sourceTree = "<group>"; };
+-		OBJ_164 /* rsa_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsa_internal.h; sourceTree = "<group>"; };
+-		OBJ_165 /* pkcs5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs5.h; sourceTree = "<group>"; };
+-		OBJ_166 /* ripemd160.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ripemd160.h; sourceTree = "<group>"; };
+-		OBJ_167 /* blowfish.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = blowfish.h; sourceTree = "<group>"; };
+-		OBJ_168 /* debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = debug.h; sourceTree = "<group>"; };
+-		OBJ_169 /* x509.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = x509.h; sourceTree = "<group>"; };
+ 		OBJ_17 /* lz4frame.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4frame.c; sourceTree = "<group>"; };
+-		OBJ_170 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
+-		OBJ_171 /* ecp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ecp.h; sourceTree = "<group>"; };
+-		OBJ_172 /* net.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
+-		OBJ_173 /* cipher_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cipher_internal.h; sourceTree = "<group>"; };
+-		OBJ_174 /* md_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = md_internal.h; sourceTree = "<group>"; };
+-		OBJ_175 /* base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+-		OBJ_176 /* pkcs11.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs11.h; sourceTree = "<group>"; };
+-		OBJ_177 /* ssl_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl_internal.h; sourceTree = "<group>"; };
+-		OBJ_178 /* asn1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = asn1.h; sourceTree = "<group>"; };
+-		OBJ_179 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+ 		OBJ_18 /* lz4hc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lz4hc.c; sourceTree = "<group>"; };
+-		OBJ_180 /* memory_buffer_alloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = memory_buffer_alloc.h; sourceTree = "<group>"; };
+-		OBJ_181 /* x509_csr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = x509_csr.h; sourceTree = "<group>"; };
+-		OBJ_182 /* xtea.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xtea.h; sourceTree = "<group>"; };
+-		OBJ_183 /* threading.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = threading.h; sourceTree = "<group>"; };
+-		OBJ_184 /* compat-1.3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "compat-1.3.h"; sourceTree = "<group>"; };
+-		OBJ_185 /* md5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
+-		OBJ_186 /* timing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = timing.h; sourceTree = "<group>"; };
+-		OBJ_187 /* arc4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = arc4.h; sourceTree = "<group>"; };
+-		OBJ_188 /* sha256.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sha256.h; sourceTree = "<group>"; };
+-		OBJ_189 /* ecdsa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
+ 		OBJ_19 /* xxhash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = xxhash.c; sourceTree = "<group>"; };
+-		OBJ_190 /* md.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = md.h; sourceTree = "<group>"; };
+-		OBJ_191 /* cipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cipher.h; sourceTree = "<group>"; };
+-		OBJ_192 /* ecjpake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ecjpake.h; sourceTree = "<group>"; };
+-		OBJ_193 /* net_sockets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = net_sockets.h; sourceTree = "<group>"; };
+-		OBJ_194 /* entropy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = entropy.h; sourceTree = "<group>"; };
+-		OBJ_195 /* pkcs12.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs12.h; sourceTree = "<group>"; };
+-		OBJ_196 /* padlock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = padlock.h; sourceTree = "<group>"; };
+-		OBJ_197 /* sha512.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sha512.h; sourceTree = "<group>"; };
+-		OBJ_198 /* bn_mul.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bn_mul.h; sourceTree = "<group>"; };
+-		OBJ_199 /* pk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pk.h; sourceTree = "<group>"; };
+-		OBJ_200 /* ecp_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ecp_internal.h; sourceTree = "<group>"; };
+-		OBJ_201 /* ssl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl.h; sourceTree = "<group>"; };
+-		OBJ_202 /* platform_time.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform_time.h; sourceTree = "<group>"; };
+-		OBJ_203 /* camellia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camellia.h; sourceTree = "<group>"; };
+-		OBJ_204 /* md4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = md4.h; sourceTree = "<group>"; };
+-		OBJ_205 /* x509_crt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = x509_crt.h; sourceTree = "<group>"; };
+-		OBJ_206 /* aes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
+-		OBJ_207 /* pk_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pk_internal.h; sourceTree = "<group>"; };
+-		OBJ_208 /* ssl_cookie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl_cookie.h; sourceTree = "<group>"; };
+-		OBJ_209 /* dhm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dhm.h; sourceTree = "<group>"; };
+ 		OBJ_21 /* lz4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lz4.h; sourceTree = "<group>"; };
+-		OBJ_210 /* aesni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aesni.h; sourceTree = "<group>"; };
+-		OBJ_211 /* ctr_drbg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctr_drbg.h; sourceTree = "<group>"; };
+-		OBJ_212 /* des.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = des.h; sourceTree = "<group>"; };
+-		OBJ_213 /* x509_crl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = x509_crl.h; sourceTree = "<group>"; };
+-		OBJ_214 /* ecdh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ecdh.h; sourceTree = "<group>"; };
+-		OBJ_215 /* sha1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
+-		OBJ_216 /* gcm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gcm.h; sourceTree = "<group>"; };
+-		OBJ_217 /* certs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = certs.h; sourceTree = "<group>"; };
+-		OBJ_218 /* rsa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsa.h; sourceTree = "<group>"; };
+-		OBJ_219 /* hmac_drbg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hmac_drbg.h; sourceTree = "<group>"; };
+ 		OBJ_22 /* lz4frame_static.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lz4frame_static.h; sourceTree = "<group>"; };
+-		OBJ_220 /* ssl_ticket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl_ticket.h; sourceTree = "<group>"; };
+-		OBJ_221 /* ssl_ciphersuites.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl_ciphersuites.h; sourceTree = "<group>"; };
+-		OBJ_222 /* ssl_cache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ssl_cache.h; sourceTree = "<group>"; };
+-		OBJ_223 /* cmac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cmac.h; sourceTree = "<group>"; };
+-		OBJ_224 /* platform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+-		OBJ_225 /* bignum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bignum.h; sourceTree = "<group>"; };
+-		OBJ_226 /* entropy_poll.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = entropy_poll.h; sourceTree = "<group>"; };
+-		OBJ_227 /* havege.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = havege.h; sourceTree = "<group>"; };
+-		OBJ_228 /* asn1write.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = asn1write.h; sourceTree = "<group>"; };
+-		OBJ_229 /* ccm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ccm.h; sourceTree = "<group>"; };
+ 		OBJ_23 /* lz4hc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lz4hc.h; sourceTree = "<group>"; };
+ 		OBJ_24 /* lz4frame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lz4frame.h; sourceTree = "<group>"; };
+ 		OBJ_28 /* NSArray+OpenVPNAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+OpenVPNAdditions.m"; sourceTree = "<group>"; };
+@@ -467,25 +268,9 @@
+ 		OBJ_69 /* OpenVPNSessionToken.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNSessionToken.h; sourceTree = "<group>"; };
+ 		OBJ_70 /* OpenVPNCertificate.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNCertificate.h; sourceTree = "<group>"; };
+ 		OBJ_73 /* ovpncli.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ovpncli.mm; sourceTree = "<group>"; };
+-		OBJ_85 /* aes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aes.c; sourceTree = "<group>"; };
+-		OBJ_86 /* aesni.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aesni.c; sourceTree = "<group>"; };
+-		OBJ_87 /* arc4.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = arc4.c; sourceTree = "<group>"; };
+-		OBJ_88 /* asn1parse.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = asn1parse.c; sourceTree = "<group>"; };
+-		OBJ_89 /* asn1write.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = asn1write.c; sourceTree = "<group>"; };
+-		OBJ_90 /* base64.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
+-		OBJ_91 /* bignum.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bignum.c; sourceTree = "<group>"; };
+-		OBJ_92 /* blowfish.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = blowfish.c; sourceTree = "<group>"; };
+-		OBJ_93 /* camellia.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = camellia.c; sourceTree = "<group>"; };
+-		OBJ_94 /* ccm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ccm.c; sourceTree = "<group>"; };
+-		OBJ_95 /* certs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = certs.c; sourceTree = "<group>"; };
+-		OBJ_96 /* cipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cipher.c; sourceTree = "<group>"; };
+-		OBJ_97 /* cipher_wrap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cipher_wrap.c; sourceTree = "<group>"; };
+-		OBJ_98 /* cmac.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cmac.c; sourceTree = "<group>"; };
+-		OBJ_99 /* ctr_drbg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctr_drbg.c; sourceTree = "<group>"; };
+ 		"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+-		"OpenVPNAdapter::mbedTLS::Product" /* mbedTLS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = mbedTLS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+ /* End PBXFileReference section */
+ 
+ /* Begin PBXFrameworksBuildPhase section */
+@@ -507,9 +292,9 @@
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 0;
+ 			files = (
++				BE0EBD24268BB4AB005CFAEC /* OpenSSL.xcframework in Frameworks */,
+ 				OBJ_304 /* OpenVPNClient.framework in Frameworks */,
+ 				C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */,
+-				C97E5FEC24124B73005C2EBC /* mbedTLS.framework in Frameworks */,
+ 				C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */,
+ 				C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */,
+ 			);
+@@ -519,18 +304,11 @@
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 0;
+ 			files = (
+-				OBJ_324 /* mbedTLS.framework in Frameworks */,
++				BE0EBD1A268BB49F005CFAEC /* OpenSSL.xcframework in Frameworks */,
+ 				OBJ_325 /* LZ4.framework in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+-		OBJ_404 /* Frameworks */ = {
+-			isa = PBXFrameworksBuildPhase;
+-			buildActionMask = 0;
+-			files = (
+-			);
+-			runOnlyForDeploymentPostprocessing = 0;
+-		};
+ /* End PBXFrameworksBuildPhase section */
+ 
+ /* Begin PBXGroup section */
+@@ -562,6 +340,7 @@
+ 		C9EABF2F24110BE100D828D4 /* Frameworks */ = {
+ 			isa = PBXGroup;
+ 			children = (
++				BE0EBD19268BB49F005CFAEC /* OpenSSL.xcframework */,
+ 				C9EABF642411189800D828D4 /* UIKit.framework */,
+ 				C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */,
+ 			);
+@@ -573,7 +352,6 @@
+ 			children = (
+ 				C9EABF492411133400D828D4 /* Project.xcconfig */,
+ 				C9EABF7524111E9C00D828D4 /* LZ4.xcconfig */,
+-				C9EABF7624111F1600D828D4 /* mbedTLS.xcconfig */,
+ 				C9EABF7324111AEE00D828D4 /* OpenVPNClient.xcconfig */,
+ 				C9EABF7424111D6100D828D4 /* OpenVPNAdapter.xcconfig */,
+ 			);
+@@ -591,92 +369,6 @@
+ 			path = lib;
+ 			sourceTree = "<group>";
+ 		};
+-		OBJ_157 /* include */ = {
+-			isa = PBXGroup;
+-			children = (
+-				OBJ_158 /* mbedtls */,
+-			);
+-			path = include;
+-			sourceTree = "<group>";
+-		};
+-		OBJ_158 /* mbedtls */ = {
+-			isa = PBXGroup;
+-			children = (
+-				OBJ_159 /* pem.h */,
+-				OBJ_160 /* check_config.h */,
+-				OBJ_161 /* error.h */,
+-				OBJ_162 /* md2.h */,
+-				OBJ_163 /* oid.h */,
+-				OBJ_164 /* rsa_internal.h */,
+-				OBJ_165 /* pkcs5.h */,
+-				OBJ_166 /* ripemd160.h */,
+-				OBJ_167 /* blowfish.h */,
+-				OBJ_168 /* debug.h */,
+-				OBJ_169 /* x509.h */,
+-				OBJ_170 /* version.h */,
+-				OBJ_171 /* ecp.h */,
+-				OBJ_172 /* net.h */,
+-				OBJ_173 /* cipher_internal.h */,
+-				OBJ_174 /* md_internal.h */,
+-				OBJ_175 /* base64.h */,
+-				OBJ_176 /* pkcs11.h */,
+-				OBJ_177 /* ssl_internal.h */,
+-				OBJ_178 /* asn1.h */,
+-				OBJ_179 /* config.h */,
+-				OBJ_180 /* memory_buffer_alloc.h */,
+-				OBJ_181 /* x509_csr.h */,
+-				OBJ_182 /* xtea.h */,
+-				OBJ_183 /* threading.h */,
+-				OBJ_184 /* compat-1.3.h */,
+-				OBJ_185 /* md5.h */,
+-				OBJ_186 /* timing.h */,
+-				OBJ_187 /* arc4.h */,
+-				OBJ_188 /* sha256.h */,
+-				OBJ_189 /* ecdsa.h */,
+-				OBJ_190 /* md.h */,
+-				OBJ_191 /* cipher.h */,
+-				OBJ_192 /* ecjpake.h */,
+-				OBJ_193 /* net_sockets.h */,
+-				OBJ_194 /* entropy.h */,
+-				OBJ_195 /* pkcs12.h */,
+-				OBJ_196 /* padlock.h */,
+-				OBJ_197 /* sha512.h */,
+-				OBJ_198 /* bn_mul.h */,
+-				OBJ_199 /* pk.h */,
+-				OBJ_200 /* ecp_internal.h */,
+-				OBJ_201 /* ssl.h */,
+-				OBJ_202 /* platform_time.h */,
+-				OBJ_203 /* camellia.h */,
+-				OBJ_204 /* md4.h */,
+-				OBJ_205 /* x509_crt.h */,
+-				OBJ_206 /* aes.h */,
+-				OBJ_207 /* pk_internal.h */,
+-				OBJ_208 /* ssl_cookie.h */,
+-				OBJ_209 /* dhm.h */,
+-				OBJ_210 /* aesni.h */,
+-				OBJ_211 /* ctr_drbg.h */,
+-				OBJ_212 /* des.h */,
+-				OBJ_213 /* x509_crl.h */,
+-				OBJ_214 /* ecdh.h */,
+-				OBJ_215 /* sha1.h */,
+-				OBJ_216 /* gcm.h */,
+-				OBJ_217 /* certs.h */,
+-				OBJ_218 /* rsa.h */,
+-				OBJ_219 /* hmac_drbg.h */,
+-				OBJ_220 /* ssl_ticket.h */,
+-				OBJ_221 /* ssl_ciphersuites.h */,
+-				OBJ_222 /* ssl_cache.h */,
+-				OBJ_223 /* cmac.h */,
+-				OBJ_224 /* platform.h */,
+-				OBJ_225 /* bignum.h */,
+-				OBJ_226 /* entropy_poll.h */,
+-				OBJ_227 /* havege.h */,
+-				OBJ_228 /* asn1write.h */,
+-				OBJ_229 /* ccm.h */,
+-			);
+-			path = mbedtls;
+-			sourceTree = "<group>";
+-		};
+ 		OBJ_20 /* include */ = {
+ 			isa = PBXGroup;
+ 			children = (
+@@ -700,7 +392,6 @@
+ 		OBJ_232 /* Products */ = {
+ 			isa = PBXGroup;
+ 			children = (
+-				"OpenVPNAdapter::mbedTLS::Product" /* mbedTLS.framework */,
+ 				"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */,
+ 				"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */,
+ 				"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */,
+@@ -830,7 +521,6 @@
+ 			isa = PBXGroup;
+ 			children = (
+ 				OBJ_8 /* LZ4 */,
+-				OBJ_76 /* mbedTLS */,
+ 				OBJ_71 /* OpenVPNClient */,
+ 				OBJ_26 /* OpenVPNAdapter */,
+ 			);
+@@ -864,16 +554,6 @@
+ 			path = include;
+ 			sourceTree = "<group>";
+ 		};
+-		OBJ_76 /* mbedTLS */ = {
+-			isa = PBXGroup;
+-			children = (
+-				OBJ_157 /* include */,
+-				OBJ_84 /* library */,
+-			);
+-			name = mbedTLS;
+-			path = Sources/mbedTLS;
+-			sourceTree = SOURCE_ROOT;
+-		};
+ 		OBJ_8 /* LZ4 */ = {
+ 			isa = PBXGroup;
+ 			children = (
+@@ -884,85 +564,6 @@
+ 			path = Sources/LZ4;
+ 			sourceTree = SOURCE_ROOT;
+ 		};
+-		OBJ_84 /* library */ = {
+-			isa = PBXGroup;
+-			children = (
+-				OBJ_85 /* aes.c */,
+-				OBJ_86 /* aesni.c */,
+-				OBJ_87 /* arc4.c */,
+-				OBJ_88 /* asn1parse.c */,
+-				OBJ_89 /* asn1write.c */,
+-				OBJ_90 /* base64.c */,
+-				OBJ_91 /* bignum.c */,
+-				OBJ_92 /* blowfish.c */,
+-				OBJ_93 /* camellia.c */,
+-				OBJ_94 /* ccm.c */,
+-				OBJ_95 /* certs.c */,
+-				OBJ_96 /* cipher.c */,
+-				OBJ_97 /* cipher_wrap.c */,
+-				OBJ_98 /* cmac.c */,
+-				OBJ_99 /* ctr_drbg.c */,
+-				OBJ_100 /* debug.c */,
+-				OBJ_101 /* des.c */,
+-				OBJ_102 /* dhm.c */,
+-				OBJ_103 /* ecdh.c */,
+-				OBJ_104 /* ecdsa.c */,
+-				OBJ_105 /* ecjpake.c */,
+-				OBJ_106 /* ecp.c */,
+-				OBJ_107 /* ecp_curves.c */,
+-				OBJ_108 /* entropy.c */,
+-				OBJ_109 /* entropy_poll.c */,
+-				OBJ_110 /* error.c */,
+-				OBJ_111 /* gcm.c */,
+-				OBJ_112 /* havege.c */,
+-				OBJ_113 /* hmac_drbg.c */,
+-				OBJ_114 /* md.c */,
+-				OBJ_115 /* md2.c */,
+-				OBJ_116 /* md4.c */,
+-				OBJ_117 /* md5.c */,
+-				OBJ_118 /* md_wrap.c */,
+-				OBJ_119 /* memory_buffer_alloc.c */,
+-				OBJ_120 /* net_sockets.c */,
+-				OBJ_121 /* oid.c */,
+-				OBJ_122 /* padlock.c */,
+-				OBJ_123 /* pem.c */,
+-				OBJ_124 /* pk.c */,
+-				OBJ_125 /* pk_wrap.c */,
+-				OBJ_126 /* pkcs11.c */,
+-				OBJ_127 /* pkcs12.c */,
+-				OBJ_128 /* pkcs5.c */,
+-				OBJ_129 /* pkparse.c */,
+-				OBJ_130 /* pkwrite.c */,
+-				OBJ_131 /* platform.c */,
+-				OBJ_132 /* ripemd160.c */,
+-				OBJ_133 /* rsa.c */,
+-				OBJ_134 /* rsa_internal.c */,
+-				OBJ_135 /* sha1.c */,
+-				OBJ_136 /* sha256.c */,
+-				OBJ_137 /* sha512.c */,
+-				OBJ_138 /* ssl_cache.c */,
+-				OBJ_139 /* ssl_ciphersuites.c */,
+-				OBJ_140 /* ssl_cli.c */,
+-				OBJ_141 /* ssl_cookie.c */,
+-				OBJ_142 /* ssl_srv.c */,
+-				OBJ_143 /* ssl_ticket.c */,
+-				OBJ_144 /* ssl_tls.c */,
+-				OBJ_145 /* threading.c */,
+-				OBJ_146 /* timing.c */,
+-				OBJ_147 /* version.c */,
+-				OBJ_148 /* version_features.c */,
+-				OBJ_149 /* x509.c */,
+-				OBJ_150 /* x509_create.c */,
+-				OBJ_151 /* x509_crl.c */,
+-				OBJ_152 /* x509_crt.c */,
+-				OBJ_153 /* x509_csr.c */,
+-				OBJ_154 /* x509write_crt.c */,
+-				OBJ_155 /* x509write_csr.c */,
+-				OBJ_156 /* xtea.c */,
+-			);
+-			path = library;
+-			sourceTree = "<group>";
+-		};
+ /* End PBXGroup section */
+ 
+ /* Begin PBXHeadersBuildPhase section */
+@@ -1078,13 +679,13 @@
+ 				OBJ_259 /* Sources */,
+ 				OBJ_280 /* Headers */,
+ 				OBJ_303 /* Frameworks */,
++				BE0EBD26268BB4AB005CFAEC /* Embed Frameworks */,
+ 			);
+ 			buildRules = (
+ 			);
+ 			dependencies = (
+ 				OBJ_307 /* PBXTargetDependency */,
+ 				C97E5FEA24124B6F005C2EBC /* PBXTargetDependency */,
+-				C97E5FEF24124B73005C2EBC /* PBXTargetDependency */,
+ 			);
+ 			name = OpenVPNAdapter;
+ 			productName = OpenVPNAdapter;
+@@ -1101,7 +702,6 @@
+ 			buildRules = (
+ 			);
+ 			dependencies = (
+-				OBJ_326 /* PBXTargetDependency */,
+ 				OBJ_327 /* PBXTargetDependency */,
+ 			);
+ 			name = OpenVPNClient;
+@@ -1109,22 +709,6 @@
+ 			productReference = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */;
+ 			productType = "com.apple.product-type.framework";
+ 		};
+-		"OpenVPNAdapter::mbedTLS" /* mbedTLS */ = {
+-			isa = PBXNativeTarget;
+-			buildConfigurationList = OBJ_328 /* Build configuration list for PBXNativeTarget "mbedTLS" */;
+-			buildPhases = (
+-				OBJ_331 /* Sources */,
+-				OBJ_404 /* Frameworks */,
+-			);
+-			buildRules = (
+-			);
+-			dependencies = (
+-			);
+-			name = mbedTLS;
+-			productName = mbedTLS;
+-			productReference = "OpenVPNAdapter::mbedTLS::Product" /* mbedTLS.framework */;
+-			productType = "com.apple.product-type.framework";
+-		};
+ /* End PBXNativeTarget section */
+ 
+ /* Begin PBXProject section */
+@@ -1153,7 +737,6 @@
+ 			projectRoot = "";
+ 			targets = (
+ 				"OpenVPNAdapter::LZ4" /* LZ4 */,
+-				"OpenVPNAdapter::mbedTLS" /* mbedTLS */,
+ 				"OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */,
+ 				"OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */,
+ 				C97E5FCC24123F2E005C2EBC /* OpenVPNAdapterTests */,
+@@ -1234,85 +817,6 @@
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+-		OBJ_331 /* Sources */ = {
+-			isa = PBXSourcesBuildPhase;
+-			buildActionMask = 0;
+-			files = (
+-				OBJ_332 /* aes.c in Sources */,
+-				OBJ_333 /* aesni.c in Sources */,
+-				OBJ_334 /* arc4.c in Sources */,
+-				OBJ_335 /* asn1parse.c in Sources */,
+-				OBJ_336 /* asn1write.c in Sources */,
+-				OBJ_337 /* base64.c in Sources */,
+-				OBJ_338 /* bignum.c in Sources */,
+-				OBJ_339 /* blowfish.c in Sources */,
+-				OBJ_340 /* camellia.c in Sources */,
+-				OBJ_341 /* ccm.c in Sources */,
+-				OBJ_342 /* certs.c in Sources */,
+-				OBJ_343 /* cipher.c in Sources */,
+-				OBJ_344 /* cipher_wrap.c in Sources */,
+-				OBJ_345 /* cmac.c in Sources */,
+-				OBJ_346 /* ctr_drbg.c in Sources */,
+-				OBJ_347 /* debug.c in Sources */,
+-				OBJ_348 /* des.c in Sources */,
+-				OBJ_349 /* dhm.c in Sources */,
+-				OBJ_350 /* ecdh.c in Sources */,
+-				OBJ_351 /* ecdsa.c in Sources */,
+-				OBJ_352 /* ecjpake.c in Sources */,
+-				OBJ_353 /* ecp.c in Sources */,
+-				OBJ_354 /* ecp_curves.c in Sources */,
+-				OBJ_355 /* entropy.c in Sources */,
+-				OBJ_356 /* entropy_poll.c in Sources */,
+-				OBJ_357 /* error.c in Sources */,
+-				OBJ_358 /* gcm.c in Sources */,
+-				OBJ_359 /* havege.c in Sources */,
+-				OBJ_360 /* hmac_drbg.c in Sources */,
+-				OBJ_361 /* md.c in Sources */,
+-				OBJ_362 /* md2.c in Sources */,
+-				OBJ_363 /* md4.c in Sources */,
+-				OBJ_364 /* md5.c in Sources */,
+-				OBJ_365 /* md_wrap.c in Sources */,
+-				OBJ_366 /* memory_buffer_alloc.c in Sources */,
+-				OBJ_367 /* net_sockets.c in Sources */,
+-				OBJ_368 /* oid.c in Sources */,
+-				OBJ_369 /* padlock.c in Sources */,
+-				OBJ_370 /* pem.c in Sources */,
+-				OBJ_371 /* pk.c in Sources */,
+-				OBJ_372 /* pk_wrap.c in Sources */,
+-				OBJ_373 /* pkcs11.c in Sources */,
+-				OBJ_374 /* pkcs12.c in Sources */,
+-				OBJ_375 /* pkcs5.c in Sources */,
+-				OBJ_376 /* pkparse.c in Sources */,
+-				OBJ_377 /* pkwrite.c in Sources */,
+-				OBJ_378 /* platform.c in Sources */,
+-				OBJ_379 /* ripemd160.c in Sources */,
+-				OBJ_380 /* rsa.c in Sources */,
+-				OBJ_381 /* rsa_internal.c in Sources */,
+-				OBJ_382 /* sha1.c in Sources */,
+-				OBJ_383 /* sha256.c in Sources */,
+-				OBJ_384 /* sha512.c in Sources */,
+-				OBJ_385 /* ssl_cache.c in Sources */,
+-				OBJ_386 /* ssl_ciphersuites.c in Sources */,
+-				OBJ_387 /* ssl_cli.c in Sources */,
+-				OBJ_388 /* ssl_cookie.c in Sources */,
+-				OBJ_389 /* ssl_srv.c in Sources */,
+-				OBJ_390 /* ssl_ticket.c in Sources */,
+-				OBJ_391 /* ssl_tls.c in Sources */,
+-				OBJ_392 /* threading.c in Sources */,
+-				OBJ_393 /* timing.c in Sources */,
+-				OBJ_394 /* version.c in Sources */,
+-				OBJ_395 /* version_features.c in Sources */,
+-				OBJ_396 /* x509.c in Sources */,
+-				OBJ_397 /* x509_create.c in Sources */,
+-				OBJ_398 /* x509_crl.c in Sources */,
+-				OBJ_399 /* x509_crt.c in Sources */,
+-				OBJ_400 /* x509_csr.c in Sources */,
+-				OBJ_401 /* x509write_crt.c in Sources */,
+-				OBJ_402 /* x509write_csr.c in Sources */,
+-				OBJ_403 /* xtea.c in Sources */,
+-			);
+-			runOnlyForDeploymentPostprocessing = 0;
+-		};
+ /* End PBXSourcesBuildPhase section */
+ 
+ /* Begin PBXTargetDependency section */
+@@ -1326,21 +830,11 @@
+ 			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
+ 			targetProxy = C97E5FE924124B6F005C2EBC /* PBXContainerItemProxy */;
+ 		};
+-		C97E5FEF24124B73005C2EBC /* PBXTargetDependency */ = {
+-			isa = PBXTargetDependency;
+-			target = "OpenVPNAdapter::mbedTLS" /* mbedTLS */;
+-			targetProxy = C97E5FEE24124B73005C2EBC /* PBXContainerItemProxy */;
+-		};
+ 		OBJ_307 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = "OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */;
+ 			targetProxy = C9EABF2C2411076400D828D4 /* PBXContainerItemProxy */;
+ 		};
+-		OBJ_326 /* PBXTargetDependency */ = {
+-			isa = PBXTargetDependency;
+-			target = "OpenVPNAdapter::mbedTLS" /* mbedTLS */;
+-			targetProxy = C9EABF2A2411076400D828D4 /* PBXContainerItemProxy */;
+-		};
+ 		OBJ_327 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
+@@ -1674,64 +1168,6 @@
+ 			};
+ 			name = Release;
+ 		};
+-		OBJ_329 /* Debug */ = {
+-			isa = XCBuildConfiguration;
+-			baseConfigurationReference = C9EABF7624111F1600D828D4 /* mbedTLS.xcconfig */;
+-			buildSettings = {
+-				APPLICATION_EXTENSION_API_ONLY = YES;
+-				CURRENT_PROJECT_VERSION = 1;
+-				DEFINES_MODULE = NO;
+-				ENABLE_TESTABILITY = YES;
+-				FRAMEWORK_SEARCH_PATHS = (
+-					"$(inherited)",
+-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+-				);
+-				INFOPLIST_FILE = OpenVPNAdapter.xcodeproj/mbedTLS_Info.plist;
+-				LD_RUNPATH_SEARCH_PATHS = (
+-					"$(inherited)",
+-					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+-				);
+-				MACH_O_TYPE = staticlib;
+-				MARKETING_VERSION = 2.7.13;
+-				OTHER_SWIFT_FLAGS = "$(inherited)";
+-				PRODUCT_BUNDLE_IDENTIFIER = mbedTLS;
+-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+-				SKIP_INSTALL = YES;
+-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+-				TARGET_NAME = mbedTLS;
+-			};
+-			name = Debug;
+-		};
+-		OBJ_330 /* Release */ = {
+-			isa = XCBuildConfiguration;
+-			baseConfigurationReference = C9EABF7624111F1600D828D4 /* mbedTLS.xcconfig */;
+-			buildSettings = {
+-				APPLICATION_EXTENSION_API_ONLY = YES;
+-				CURRENT_PROJECT_VERSION = 1;
+-				DEFINES_MODULE = NO;
+-				ENABLE_TESTABILITY = YES;
+-				FRAMEWORK_SEARCH_PATHS = (
+-					"$(inherited)",
+-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+-				);
+-				INFOPLIST_FILE = OpenVPNAdapter.xcodeproj/mbedTLS_Info.plist;
+-				LD_RUNPATH_SEARCH_PATHS = (
+-					"$(inherited)",
+-					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+-				);
+-				MACH_O_TYPE = staticlib;
+-				MARKETING_VERSION = 2.7.13;
+-				OTHER_SWIFT_FLAGS = "$(inherited)";
+-				PRODUCT_BUNDLE_IDENTIFIER = mbedTLS;
+-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+-				SKIP_INSTALL = YES;
+-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+-				TARGET_NAME = mbedTLS;
+-			};
+-			name = Release;
+-		};
+ 		OBJ_4 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = C9EABF492411133400D828D4 /* Project.xcconfig */;
+@@ -1803,15 +1239,6 @@
+ 			defaultConfigurationIsVisible = 0;
+ 			defaultConfigurationName = Release;
+ 		};
+-		OBJ_328 /* Build configuration list for PBXNativeTarget "mbedTLS" */ = {
+-			isa = XCConfigurationList;
+-			buildConfigurations = (
+-				OBJ_329 /* Debug */,
+-				OBJ_330 /* Release */,
+-			);
+-			defaultConfigurationIsVisible = 0;
+-			defaultConfigurationName = Release;
+-		};
+ /* End XCConfigurationList section */
+ 	};
+ 	rootObject = OBJ_1 /* Project object */;
+diff --git a/Sources/OpenVPNAdapter/library/NSError+OpenVPNError.m b/Sources/OpenVPNAdapter/library/NSError+OpenVPNError.m
+index 973c80e1221b..93e88740e300 100644
+--- a/Sources/OpenVPNAdapter/library/NSError+OpenVPNError.m
++++ b/Sources/OpenVPNAdapter/library/NSError+OpenVPNError.m
+@@ -6,8 +6,9 @@
+ //
+ 
+ #import "NSError+OpenVPNError.h"
+-
++#if defined(USE_MBEDTLS)
+ #import <mbedtls/error.h>
++#endif
+ 
+ #import "OpenVPNError.h"
+ 
+@@ -195,7 +196,7 @@
+ }
+ 
+ @end
+-
++#if defined(USE_MBEDTLS)
+ @implementation NSError (OpenVPNMbedTLSErrorGeneration)
+ 
+ + (NSError *)ovpn_errorObjectForMbedTLSError:(NSInteger)errorCode description:(NSString *)description {
+@@ -215,3 +216,4 @@
+ }
+ 
+ @end
++#endif
+diff --git a/Sources/OpenVPNAdapter/library/OpenVPNCertificate.m b/Sources/OpenVPNAdapter/library/OpenVPNCertificate.m
+index 8e40725cfe53..2bb17ba4e843 100644
+--- a/Sources/OpenVPNAdapter/library/OpenVPNCertificate.m
++++ b/Sources/OpenVPNAdapter/library/OpenVPNCertificate.m
+@@ -5,6 +5,7 @@
+ //  Created by Sergey Abramchuk on 06.09.17.
+ //
+ //
++#if defined(USE_MBEDTLS)
+ #import "OpenVPNCertificate.h"
+ 
+ #include <mbedtls/x509_crt.h>
+@@ -123,3 +124,4 @@
+ }
+ 
+ @end
++#endif
+diff --git a/Sources/OpenVPNAdapter/library/OpenVPNPrivateKey.m b/Sources/OpenVPNAdapter/library/OpenVPNPrivateKey.m
+index d85cd902ff78..3f0795a34ecd 100644
+--- a/Sources/OpenVPNAdapter/library/OpenVPNPrivateKey.m
++++ b/Sources/OpenVPNAdapter/library/OpenVPNPrivateKey.m
+@@ -7,7 +7,7 @@
+ //
+ 
+ #import "OpenVPNPrivateKey.h"
+-
++#if defined(USE_MBEDTLS)
+ #include <mbedtls/pk.h>
+ 
+ #import "OpenVPNKeyType.h"
+@@ -128,3 +128,4 @@
+ }
+ 
+ @end
++#endif
+-- 
+2.29.2
+
