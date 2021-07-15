@@ -112,6 +112,11 @@ typedef NS_ENUM(NSInteger, OpenVPNTLSCertProfile);
 @property (nonatomic) BOOL retryOnAuthFailed;
 
 /**
+ External PKI alias
+ */
+@property (nullable, nonatomic) NSString *externalPkiAlias;
+
+/**
  If YES, don't send client cert/key to peer
  */
 @property (nonatomic) BOOL disableClientCert;

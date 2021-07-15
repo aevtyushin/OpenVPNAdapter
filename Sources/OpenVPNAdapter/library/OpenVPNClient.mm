@@ -164,8 +164,29 @@ bool OpenVPNClient::pause_on_connection_timeout() {
     return false;
 }
 
-void OpenVPNClient::external_pki_cert_request(ClientAPI::ExternalPKICertRequest& certreq) { }
-void OpenVPNClient::external_pki_sign_request(ClientAPI::ExternalPKISignRequest& signreq) { }
+void OpenVPNClient::external_pki_cert_request(ClientAPI::ExternalPKICertRequest& certreq) {
+    NSString *cert = [NSString stringWithUTF8String:certreq.cert.c_str()];
+    NSString *supportingChain = [NSString stringWithUTF8String:certreq.supportingChain.c_str()];
+    
+    if ([this->delegate respondsToSelector:@selector(externalPKICertRequestWithCert:andSupportingChain:)]) {
+        [this->delegate externalPKICertRequestWithCert:&cert andSupportingChain:&supportingChain];
+        certreq.cert = std::string([cert UTF8String]);
+        certreq.supportingChain = std::string([supportingChain UTF8String]);
+    }
+}
+
+
+void OpenVPNClient::external_pki_sign_request(ClientAPI::ExternalPKISignRequest& signreq) {
+    NSString *data = [NSString stringWithUTF8String:signreq.data.c_str()];
+    NSString *algorithm = [NSString stringWithUTF8String:signreq.algorithm.c_str()];
+    
+    if ([this->delegate respondsToSelector:@selector(externalPKISignRequestWithData:algorithm:)]) {
+        NSString *signature = [this->delegate externalPKISignRequestWithData:data algorithm:algorithm];
+        if (signature.length > 0) {
+            signreq.sig = std::string([signature UTF8String]);
+        }
+    }
+}
 
 void OpenVPNClient::event(const ClientAPI::Event& ev) {
     NSString *name = [NSString stringWithUTF8String:ev.name.c_str()];

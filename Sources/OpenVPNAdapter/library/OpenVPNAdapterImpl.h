@@ -82,6 +82,23 @@ NS_SWIFT_NAME(openVPNAdapter(_:handleEvent:message:));
  */
 - (void)openVPNAdapterDidReceiveClockTick:(OpenVPNAdapter *)openVPNAdapter;
 
+/**
+ Allows  the receiver to handle PKI cert request.
+ 
+ @param openVPNAdapter The OpenVPNAdapter instance which encountered PKI cert request.
+ */
+- (void)openVPNAdapter:(OpenVPNAdapter *)openVPNAdapter
+          handleErexternalPKICertRequest:(void (^)(NSDictionary * _Nullable result))completionHandler;
+
+/**
+ Allows  the receiver to handle PKI sign request.
+ 
+ @param openVPNAdapter The OpenVPNAdapter instance which encountered PKI sign request.
+ */
+- (nullable NSString*)openVPNAdapter:(OpenVPNAdapter *)openVPNAdapter
+        handleExternalPKISignRequest:(NSString *)data
+                           algorithm:(NSString *)algorithm;
+
 @end
 
 @interface OpenVPNAdapter : NSObject

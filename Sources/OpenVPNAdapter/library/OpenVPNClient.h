@@ -52,6 +52,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)resetSettings;
 - (void)resetTun;
+
+@optional
+
+- (void)externalPKICertRequestWithCert:(NSString**)cert andSupportingChain:(NSString**)supportingChain;
+- (nullable NSString*)externalPKISignRequestWithData:(NSString*)data algorithm:(NSString*)algorithm;
+
 @end
 
 NS_ASSUME_NONNULL_END

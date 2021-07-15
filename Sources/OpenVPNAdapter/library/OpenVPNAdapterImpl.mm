@@ -463,6 +463,37 @@
     }
 }
 
+- (void)externalPKICertRequestWithCert:(NSString *__autoreleasing *)cert
+                    andSupportingChain:(NSString *__autoreleasing *)supportingChain {
+    if ([self.delegate respondsToSelector:@selector(openVPNAdapter:handleErexternalPKICertRequest:)]) {
+        [self.delegate openVPNAdapter:self handleErexternalPKICertRequest:^(NSDictionary * _Nullable result) {
+            
+            NSString *resultCert = [result valueForKey:@"cert"];
+            if (resultCert.length > 0) {
+                *cert = resultCert;
+            }
+            NSString *resultCA = [result valueForKey:@"ca"];
+            if (resultCA.length > 0) {
+                *supportingChain = resultCA;
+            }
+            
+        }];
+    }
+}
+
+- (nullable NSString*)externalPKISignRequestWithData:(NSString *)data algorithm:(NSString *)algorithm {
+    // Used to request an RSA signature.
+    // algorithm will determinate what signature is expected:
+    // RSA_PKCS1_PADDING means that
+    // data will be prefixed by an optional PKCS#1 digest prefix
+    // per RFC 3447.
+    // RSA_NO_PADDING mean so no padding should be done be the callee
+  
+    if ([self.delegate respondsToSelector:@selector(openVPNAdapter:handleExternalPKISignRequest:algorithm:)]) {
+        return [self.delegate openVPNAdapter:self handleExternalPKISignRequest:data algorithm:algorithm];
+    }
+}
+
 #pragma mark -
 
 - (void)dealloc {

@@ -372,6 +372,14 @@ NSString *const OpenVPNTLSCertProfileDefaultValue = @"default";
     _config.retryOnAuthFailed = retryOnAuthFailed;
 }
 
+- (NSString *)externalPkiAlias {
+    return !_config.externalPkiAlias.empty() ? [NSString stringWithUTF8String:_config.externalPkiAlias.c_str()] : nil;
+}
+
+- (void)setExternalPkiAlias:(NSString *)externalPkiAlias {
+    _config.externalPkiAlias = externalPkiAlias ? std::string([externalPkiAlias UTF8String]) : "";
+}
+
 - (BOOL)disableClientCert {
     return _config.disableClientCert;
 }

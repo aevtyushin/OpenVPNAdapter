@@ -61,7 +61,7 @@
 		C97E5FE024123F48005C2EBC /* VPNProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FDA24123F48005C2EBC /* VPNProfile.swift */; };
 		C97E5FE124123F48005C2EBC /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E5FDB24123F48005C2EBC /* Bundle.swift */; };
 		C97E5FE624124B0E005C2EBC /* Umbrella-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = C97E5FBA2412344D005C2EBC /* Umbrella-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::LZ4::Product /* LZ4.framework */; };
+		C97E5FE724124B6F005C2EBC /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
 		C9EABF3124110BE200D828D4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF3024110BE200D828D4 /* SystemConfiguration.framework */; };
 		C9EABF772411215C00D828D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EABF642411189800D828D4 /* UIKit.framework */; platformFilter = ios; };
 		OBJ_250 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* lz4.c */; };
@@ -108,9 +108,9 @@
 		OBJ_300 /* OpenVPNTransportStats.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_68 /* OpenVPNTransportStats.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		OBJ_301 /* OpenVPNSessionToken.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_69 /* OpenVPNSessionToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		OBJ_302 /* OpenVPNCertificate.h in Headers */ = {isa = PBXBuildFile; fileRef = OBJ_70 /* OpenVPNCertificate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		OBJ_304 /* OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */; };
+		OBJ_304 /* OpenVPNClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */; };
 		OBJ_322 /* ovpncli.mm in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_73 /* ovpncli.mm */; };
-		OBJ_325 /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OpenVPNAdapter::LZ4::Product /* LZ4.framework */; };
+		OBJ_325 /* LZ4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -269,9 +269,9 @@
 		OBJ_69 /* OpenVPNSessionToken.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNSessionToken.h; sourceTree = "<group>"; };
 		OBJ_70 /* OpenVPNCertificate.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; path = OpenVPNCertificate.h; sourceTree = "<group>"; };
 		OBJ_73 /* ovpncli.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = ovpncli.mm; sourceTree = "<group>"; };
-		OpenVPNAdapter::LZ4::Product /* LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LZ4.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNAdapter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OpenVPNClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,7 +327,6 @@
 				4D840B95474E8926A226E47A /* Pods-OpenVPNClient.debug.xcconfig */,
 				73FEF865507EBBBD08CCE018 /* Pods-OpenVPNClient.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -417,9 +416,9 @@
 		OBJ_232 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */,
-				OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */,
-				OpenVPNAdapter::LZ4::Product /* LZ4.framework */,
+				"OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */,
+				"OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */,
+				"OpenVPNAdapter::LZ4::Product" /* LZ4.framework */,
 				C97E5FCD24123F2E005C2EBC /* OpenVPNAdapterTests.xctest */,
 			);
 			name = Products;
@@ -684,7 +683,7 @@
 			productReference = C97E5FCD24123F2E005C2EBC /* OpenVPNAdapterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		OpenVPNAdapter::LZ4 /* LZ4 */ = {
+		"OpenVPNAdapter::LZ4" /* LZ4 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_246 /* Build configuration list for PBXNativeTarget "LZ4" */;
 			buildPhases = (
@@ -698,10 +697,10 @@
 			);
 			name = LZ4;
 			productName = LZ4;
-			productReference = OpenVPNAdapter::LZ4::Product /* LZ4.framework */;
+			productReference = "OpenVPNAdapter::LZ4::Product" /* LZ4.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */ = {
+		"OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_256 /* Build configuration list for PBXNativeTarget "OpenVPNAdapter" */;
 			buildPhases = (
@@ -718,10 +717,10 @@
 			);
 			name = OpenVPNAdapter;
 			productName = OpenVPNAdapter;
-			productReference = OpenVPNAdapter::OpenVPNAdapter::Product /* OpenVPNAdapter.framework */;
+			productReference = "OpenVPNAdapter::OpenVPNAdapter::Product" /* OpenVPNAdapter.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */ = {
+		"OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = OBJ_318 /* Build configuration list for PBXNativeTarget "OpenVPNClient" */;
 			buildPhases = (
@@ -736,7 +735,7 @@
 			);
 			name = OpenVPNClient;
 			productName = OpenVPNClient;
-			productReference = OpenVPNAdapter::OpenVPNClient::Product /* OpenVPNClient.framework */;
+			productReference = "OpenVPNAdapter::OpenVPNClient::Product" /* OpenVPNClient.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -766,9 +765,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				OpenVPNAdapter::LZ4 /* LZ4 */,
-				OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */,
-				OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */,
+				"OpenVPNAdapter::LZ4" /* LZ4 */,
+				"OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */,
+				"OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */,
 				C97E5FCC24123F2E005C2EBC /* OpenVPNAdapterTests */,
 			);
 		};
@@ -960,22 +959,22 @@
 /* Begin PBXTargetDependency section */
 		C97E5FE324124652005C2EBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OpenVPNAdapter::OpenVPNAdapter /* OpenVPNAdapter */;
+			target = "OpenVPNAdapter::OpenVPNAdapter" /* OpenVPNAdapter */;
 			targetProxy = C97E5FE224124652005C2EBC /* PBXContainerItemProxy */;
 		};
 		C97E5FEA24124B6F005C2EBC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OpenVPNAdapter::LZ4 /* LZ4 */;
+			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
 			targetProxy = C97E5FE924124B6F005C2EBC /* PBXContainerItemProxy */;
 		};
 		OBJ_307 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OpenVPNAdapter::OpenVPNClient /* OpenVPNClient */;
+			target = "OpenVPNAdapter::OpenVPNClient" /* OpenVPNClient */;
 			targetProxy = C9EABF2C2411076400D828D4 /* PBXContainerItemProxy */;
 		};
 		OBJ_327 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OpenVPNAdapter::LZ4 /* LZ4 */;
+			target = "OpenVPNAdapter::LZ4" /* LZ4 */;
 			targetProxy = C9EABF2B2411076400D828D4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1181,7 +1180,7 @@
 					"$(inherited)",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
 				);
-				MARKETING_VERSION = 0.8.0;
+				MARKETING_VERSION = 0.8.1;
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = OpenVPNAdapter;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -1210,7 +1209,7 @@
 					"$(inherited)",
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
 				);
-				MARKETING_VERSION = 0.8.0;
+				MARKETING_VERSION = 0.8.1;
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = OpenVPNAdapter;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
